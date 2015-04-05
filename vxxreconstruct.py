@@ -18,38 +18,36 @@ import numpy as np
 
 
 class Future(object):
-    """ vix future class, used to keep data structures simple """
+    # vix future class, used to keep data structures simple
 
     def __init__(self, series, code=None):
-        """ code is optional, example '2010_01' """
+        # code is optional, example '2010_01'
         self.series = series.dropna()  # price data
         self.settleDate = self.series.index[-1]
         self.dt = len(self.series)  # roll period (this is default, should be recalculated)
         self.code = code  # string code 'YYYY_MM'
 
     def monthNr(self):
-        """ get month nr from the future code """
+        # get month nr from the future code
         return int(self.code.split('_')[1])
 
     def dr(self, date):
-        """ days remaining before settlement, on a given date """
+        # days remaining before settlement, on a given date
         return sum(self.series.index > date)
 
     def price(self, date):
-        """ price on a date """
+        # price on a date
         return self.series.get_value(date)
 
 
 def returns(df):
-    """ daily return """
+    # daily return
     return df / df.shift(1) - 1
 
 
-def recounstructVXX():
-    """
-    calculate VXX returns
-    needs a previously preprocessed file vix_futures.csv
-    """
+def reconstructVXX():
+    # calculate VXX returns needs a previously preprocessed file vix_futures.csv
+
     X = DataFrame.from_csv('vix_futures.csv')  # raw data table
 
     # build end dates list & futures classes
@@ -104,7 +102,7 @@ def recounstructVXX():
 
 # -------------------Main script---------------------------
 
-Y = recounstructVXX()
+Y = reconstructVXX()
 
-print Y.head(30)  #
+print Y.head(30)
 Y.to_csv('reconstructedVXX.csv')
